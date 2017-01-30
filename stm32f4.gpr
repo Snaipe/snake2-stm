@@ -6,7 +6,6 @@ project STM32F4 is
    for Library_Dir use "build/lib";
 
    for Library_Interface use (
-      "last_chance_handler",
       "screen_interface",
       "stm32f429_discovery",
       "stm32f4",
@@ -32,8 +31,6 @@ project STM32F4 is
    end Builder;
 
    package Naming is
-      for Body ("last_chance_handler") use
-        "last_chance_handler-stm32f429xx.adb";
       for Casing use "lowercase";
    end Naming;
 

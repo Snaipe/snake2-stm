@@ -57,7 +57,7 @@ package body STM32F429_Discovery is
    end Toggle;
 
 
-   All_LEDs  : constant GPIO_Pins := Green & Red;
+   All_LEDs  : constant GPIO_Pins := (Green, Red);
 
    ------------------
    -- All_LEDs_Off --
