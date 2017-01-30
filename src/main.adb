@@ -1,7 +1,8 @@
-with Renderer;
 with Touch;
 
 with Screen_Interface; use Screen_Interface;
+
+with Last_Chance_Handler; pragma Unreferenced (Last_Chance_Handler);
 
 procedure Main
 is
@@ -9,7 +10,7 @@ is
 
    Div : constant Natural := 8;
 
-   subtype MapCoord is Natural range Renderer.Width'First / Div .. (Renderer.Width'Last + 1) / Div - 1;
+   subtype MapCoord is Natural range Width'First / Div .. (Width'Last + 1) / Div - 1;
 
    type Screen is array (
      MapCoord range MapCoord'First .. MapCoord'Last,
@@ -33,19 +34,19 @@ is
          when Empty =>
             for J in Y * Div .. (Y + 1) * Div - 1 loop
                for I in X * Div .. (X + 1) * Div - 1 loop
-                  Renderer.Set ((I, J), Renderer.White);
+                  Set_Pixel ((I, J), White);
                end loop;
             end loop;
          when Wall =>
             for J in Y * Div .. (Y + 1) * Div - 1 loop
                for I in X * Div .. (X + 1) * Div - 1 loop
-                  Renderer.Set ((I, J), Renderer.Black);
+                  Set_Pixel ((I, J), Black);
                end loop;
             end loop;
          when Snake_Up .. Snake_Right =>
             for J in Y * Div .. (Y + 1) * Div - 1 loop
                for I in X * Div .. (X + 1) * Div - 1 loop
-                  Renderer.Set ((I, J), Renderer.Blue);
+                  Set_Pixel ((I, J), Blue);
                end loop;
             end loop;
          when others => null;
@@ -53,6 +54,8 @@ is
    end DrawTile;
 
 begin
+   Screen_Interface.Initialize;
+
    for X in Head.X .. Tail.X loop
       Map (X, Head.Y) := Snake_Down;
    end loop;
@@ -66,22 +69,22 @@ begin
       Map (X, MapCoord'Last) := Wall;
    end loop;
 
-   loop
-      Renderer.Clear (Renderer.White);
+   Fill_Screen (White);
 
+   loop
       for Y in MapCoord'Range loop
          for X in MapCoord'Range loop
             DrawTile (Map, X, Y);
          end loop;
       end loop;
 
-      for X in Renderer.Width'Range loop
-         Set_Pixel ((X, Renderer.Width'Last + 1), Renderer.Black);
+      for X in Width'Range loop
+         Set_Pixel ((X, Width'Last + 1), Black);
       end loop;
 
       declare
-         Last_X : Renderer.Width := (Renderer.Width'Last - Renderer.Width'First) / 2;
-         Last_Y : Renderer.Height := (Renderer.Height'Last - Renderer.Height'First) / 2;
+         Last_X : Width := (Width'Last - Width'First) / 2;
+         Last_Y : Height := (Height'Last - Height'First) / 2;
          State : Touch.Touch_State;
       begin
          State := Touch.Get_Touch_State;
@@ -92,58 +95,13 @@ begin
             Last_X := State.X;
          end if;
 
-         for I in Renderer.Width loop
-            Set_Pixel ((I, Last_Y), Renderer.Red);
+         for I in Width loop
+            Set_Pixel ((I, Last_Y), Red);
          end loop;
-         for I in Renderer.Height loop
-            Set_Pixel ((Last_X, I), Renderer.Red);
+         for I in Height loop
+            Set_Pixel ((Last_X, I), Red);
          end loop;
       end;
    end loop;
-
-   if True then
-      loop
-         raise Program_Error;
-      end loop;
-   else
-      while not Touch.Get_Touch_State.Touch_Detected loop
-         null;
-      end loop;
-
-      Renderer.Clear (Renderer.Gray);
-
-      declare
-         Last_X : Renderer.Width := (Renderer.Width'Last - Renderer.Width'First) / 2;
-         Last_Y : Renderer.Height := (Renderer.Height'Last - Renderer.Height'First) / 2;
-         State : Touch.Touch_State;
-      begin
-         loop
-            loop
-               State := Touch.Get_Touch_State;
-               exit when State.Touch_Detected
-                 and then (State.X /= Last_X or State.Y /= Last_Y);
-            end loop;
-
-            --  Clear cross.
-            for I in Renderer.Width loop
-               Renderer.Set ((I, Last_Y), Renderer.Gray);
-            end loop;
-            for I in Renderer.Height loop
-               Renderer.Set ((Last_X, I), Renderer.Gray);
-            end loop;
-
-            --  Draw cross.
-            Last_Y := State.Y;
-            Last_X := State.X;
-
-            for I in Renderer.Width loop
-               Renderer.Set ((I, Last_Y), Renderer.Red);
-            end loop;
-            for I in Renderer.Height loop
-               Renderer.Set ((Last_X, I), Renderer.Red);
-            end loop;
-         end loop;
-      end;
-   end if;
 
 end Main;
