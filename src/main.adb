@@ -39,18 +39,20 @@ begin
 
    STM32F429_Discovery.On (STM32F429_Discovery.Green);
 
-   for X in Head.X .. Tail.X loop
-      CurMap (X, Head.Y) := Snake_Down;
-   end loop;
+   --for X in Head.X .. Tail.X loop
+   --   CurMap (X, Head.Y) := Snake_Down;
+   --end loop;
 
-   for Y in MapCoord'Range loop
-      CurMap (MapCoord'First, Y) := Wall;
-      CurMap (MapCoord'Last, Y) := Wall;
-   end loop;
-   for X in MapCoord'Range loop
-      CurMap (X, MapCoord'First) := Wall;
-      CurMap (X, MapCoord'Last) := Wall;
-   end loop;
+   --for Y in MapCoord'Range loop
+   --   CurMap (MapCoord'First, Y) := Wall;
+   --   CurMap (MapCoord'Last, Y) := Wall;
+   --end loop;
+   --for X in MapCoord'Range loop
+   --   CurMap (X, MapCoord'First) := Wall;
+   --   CurMap (X, MapCoord'Last) := Wall;
+   --end loop;
+
+   CurMap := Maps.From_String (Maps.Level2);
 
    Fill_Screen (White);
 

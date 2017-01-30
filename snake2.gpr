@@ -17,9 +17,9 @@ project Snake2 is
    package Compiler is
       case Build_Mode is
          when "debug" =>
-            for Default_Switches ("ada") use ("-O0", "-gnatwa", "-gnatQ", "-gnatw.X");
+            for Default_Switches ("ada") use ("-O0", "-gnatwa", "-gnatQ", "-gnatw.X", "-gnat12", "-gnata");
          when "release" =>
-            for Default_Switches ("ada") use ("-O2", "-gnatQ", "-gnatw.X");
+            for Default_Switches ("ada") use ("-O2", "-gnatQ", "-gnatw.X", "-gnat12", "-gnata");
       end case;
    end Compiler;
 
