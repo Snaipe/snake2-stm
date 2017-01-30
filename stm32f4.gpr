@@ -1,0 +1,48 @@
+project STM32F4 is
+
+   for Languages use ("Ada");
+   for Library_Name use "stm32f4";
+   for Library_Kind use "static";
+   for Library_Dir use "build/lib";
+
+   for Library_Interface use (
+      "last_chance_handler",
+      "screen_interface",
+      "stm32f429_discovery",
+      "stm32f4",
+      "stm32f4.dma",
+      "stm32f4.fmc",
+      "stm32f4.gpio",
+      "stm32f4.i2c",
+      "stm32f4.lcd",
+      "stm32f4.reset_clock_control",
+      "stm32f4.sdram",
+      "stm32f4.spi",
+      "stm32f4.sysconfig_control",
+      "stm32f4.touch_panel"
+   );
+
+   for Source_Dirs use ("stm32f4");
+   for Object_Dir use "obj";
+   for Target use "arm-eabi";
+   for Runtime ("Ada") use "ravenscar-full-stm32f4";
+
+   package Builder is
+      for Default_Switches ("ada") use ("-g");
+   end Builder;
+
+   package Naming is
+      for Body ("last_chance_handler") use
+        "last_chance_handler-stm32f429xx.adb";
+      for Casing use "lowercase";
+   end Naming;
+
+   package Ide is
+      for Gnat use "arm-eabi-gnat";
+      for Gnatlist use "arm-eabi-gnatls";
+      for Debugger_Command use "arm-eabi-gdb";
+      for Program_Host use "localhost:4242";
+      for Communication_Protocol use "remote";
+   end Ide;
+
+end STM32F4;
