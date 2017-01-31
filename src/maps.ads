@@ -1,16 +1,67 @@
-with Screen_Interface; use Screen_Interface;
+with Display;
 
 package Maps is
 
-   type Tile is (Empty, Wall, Snake_Up, Snake_Down, Snake_left, Snake_Right);
+   package Tiles is
+
+      type TileVal is mod 2 ** 8 with Size => 8;
+
+      type Tile is (
+        Empty,
+        Wall,
+        Snake,
+        Snake_Up,
+        Snake_Down,
+        Snake_Up_Down,
+        Snake_Left,
+        Snake_Up_Left,
+        Snake_Down_Left,
+        Snake_Right,
+        Snake_Up_Right,
+        Snake_Down_Right);
+
+      for Tile use (
+        Empty              => 16#0#,
+        Wall               => 16#10#,
+        Snake              => 16#20#,
+        Snake_Up           => 16#21#,
+        Snake_Down         => 16#22#,
+        Snake_Up_Down      => 16#23#,
+        Snake_Left         => 16#24#,
+        Snake_Up_Left      => 16#25#,
+        Snake_Down_Left    => 16#26#,
+        Snake_Right        => 16#28#,
+        Snake_Up_Right     => 16#29#,
+        Snake_Down_Right   => 16#2a#);
+
+      for Tile'Size use TileVal'Size;
+
+      function Val (T : Tile) return TileVal is (TileVal (T'Enum_Rep));
+
+      pragma Compile_Time_Error (not (
+         (TileVal (Snake'Enum_Rep) and TileVal (Snake_Up'Enum_Rep))     /= 0 and then
+         (TileVal (Snake'Enum_Rep) and TileVal (Snake_Down'Enum_Rep))   /= 0 and then
+         (TileVal (Snake'Enum_Rep) and TileVal (Snake_Left'Enum_Rep))   /= 0 and then
+         (TileVal (Snake'Enum_Rep) and TileVal (Snake_Right'Enum_Rep))  /= 0
+        ), "Snake subkinds are not masked by Snake");
+
+      pragma Compile_Time_Error (not (
+         (TileVal (Snake_Up'Enum_Rep)     and TileVal (Snake_Down'Enum_Rep))  /= TileVal (Snake_Up_Down'Enum_Rep)    and then
+         (TileVal (Snake_Left'Enum_Rep)   and TileVal (Snake_Down'Enum_Rep))  /= TileVal (Snake_Down_Left'Enum_Rep)  and then
+         (TileVal (Snake_Right'Enum_Rep)  and TileVal (Snake_Down'Enum_Rep))  /= TileVal (Snake_Down_Right'Enum_Rep) and then
+         (TileVal (Snake_Left'Enum_Rep)   and TileVal (Snake_Up'Enum_Rep))    /= TileVal (Snake_Up_Left'Enum_Rep)    and then
+         (TileVal (Snake_Right'Enum_Rep)  and TileVal (Snake_Up'Enum_Rep))    /= TileVal (Snake_Up_Right'Enum_Rep)
+        ), "Snake bitwise compositions are invalid");
+
+   end Tiles;
 
    Div : constant Natural := 8;
 
-   subtype MapCoord is Natural range Width'First / Div .. (Width'Last + 1) / Div - 1;
+   subtype MapCoord is Natural range Display.Width'First / Div .. (Display.Width'Last + 1) / Div - 1;
 
    type Map is array (
      MapCoord range MapCoord'First .. MapCoord'Last,
-     MapCoord range MapCoord'First .. MapCoord'Last) of Tile;
+     MapCoord range MapCoord'First .. MapCoord'Last) of Tiles.Tile;
 
    pragma Compile_Time_Error (Map'Length(1) /= Map'Length(2),
      "Map is not a square");
@@ -23,7 +74,10 @@ package Maps is
    function From_String (S : String) return Map
       with Pre => S'Length = Map'Length(1) * Map'Length(2);
 
-   CurMap : Map := (others => (others => Empty));
+   procedure DrawTile (M : Map; P : MapPoint);
+   procedure Draw (M : Map);
+
+   CurMap : Map := (others => (others => Tiles.Empty));
 
    Head : MapPoint := (X => (MapCoord'Last + MapCoord'First) / 2 + 3,
                        Y => (MapCoord'Last + MapCoord'First) / 2);
