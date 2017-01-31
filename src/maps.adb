@@ -19,16 +19,16 @@ package body Maps is
 
       procedure Snake_Correct (X, Y : MapCoord) is
       begin
-         if X - 1 in Width and then Is_Snake (M (X - 1, Y)) then
+         if X - 1 in MapCoord and then Is_Snake (M (X - 1, Y)) then
             M (X, Y) := M (X, Y) + Snake_Left;
          end if;
-         if X + 1 in Width and then Is_Snake (M (X + 1, Y)) then
+         if X + 1 in MapCoord and then Is_Snake (M (X + 1, Y)) then
             M (X, Y) := M (X, Y) + Snake_Right;
          end if;
-         if Y - 1 in Height and then Is_Snake (M (X, Y - 1)) then
+         if Y - 1 in MapCoord and then Is_Snake (M (X, Y - 1)) then
             M (X, Y) := M (X, Y) + Snake_Up;
          end if;
-         if Y + 1 in Height and then Is_Snake (M (X, Y + 1)) then
+         if Y + 1 in MapCoord and then Is_Snake (M (X, Y + 1)) then
             M (X, Y) := M (X, Y) + Snake_Down;
          end if;
       end Snake_Correct;
@@ -70,6 +70,8 @@ package body Maps is
       case M (P.X, P.Y) is
          when Empty  => Display.Fill(P1, P2, Colors.White);
          when Wall   => Display.Fill(P1, P2, Wall_Color);
+         when Food   => Display.Fill ((P1.X + 2, P1.Y + 2), (P2.X - 2, P2.Y - 2), Snake_Color);
+         when Fruit_1 => Display.Fill ((P1.X + 2, P1.Y + 2), (P2.X - 2, P2.Y - 2), Colors.Red);
          when others =>
             if Is_Snake (M (P.X, P.Y)) then
                Display.Fill ((P1.X + 2, P1.Y + 2), (P2.X - 2, P2.Y - 2), Snake_Color);
@@ -99,7 +101,7 @@ package body Maps is
       end loop;
    end Draw;
 
-   Level1 : String :=
+   Level1 : constant String :=
          "                              " &
          "                              " &
          "                              " &
@@ -131,7 +133,7 @@ package body Maps is
          "                              " &
          "                              ";
 
-   Level2 : String :=
+   Level2 : constant String :=
          "##############################" &
          "#                            #" &
          "#                            #" &
@@ -143,15 +145,15 @@ package body Maps is
          "#                            #" &
          "#                            #" &
          "#                            #" &
-         "#                            #" &
-         "#                            #" &
-         "#                            #" &
          "#    ####################    #" &
-         "#    ####################    #" &
+         "#                            #" &
          "#                            #" &
          "#                            #" &
          "#           TssssH           #" &
          "#                            #" &
+         "#                            #" &
+         "#                            #" &
+         "#    ####################    #" &
          "#                            #" &
          "#                            #" &
          "#                            #" &
@@ -163,11 +165,44 @@ package body Maps is
          "#                            #" &
          "##############################";
 
+   Level3 : constant String :=
+         "##############################" &
+         "                              " &
+         "                              " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #   ############     " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #                    " &
+         "         #  TssssH            " &
+         "#        #                   #" &
+         "#        #                   #" &
+         "#        #                   #" &
+         "#        #                   #" &
+         "#        #                   #" &
+         "#        #                   #" &
+         "#        #                   #" &
+         "#        #                   #" &
+         "#                            #" &
+         "#                            #" &
+         "##############################";
+
    function Get_Level (L : Levels) return String is
    begin
       case L is
          when Level_1 => return Level1;
          when Level_2 => return Level2;
+         when Level_3 => return Level3;
       end case;
    end Get_Level;
 

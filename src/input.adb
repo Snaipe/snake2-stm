@@ -1,6 +1,9 @@
-with Touch; use Touch;
-
 package body Input is
+
+   function Get (B : Buttons) return State is
+   begin
+      return Keys (B'Enum_Rep);
+   end Get;
 
    procedure Update (isTouched : Boolean) is
    begin
@@ -33,12 +36,12 @@ package body Input is
       if Key /= Hold then Key := Pressed; end if;
    end Press;
 
-   procedure PressLeft  is begin Press (Keys (0)); end PressLeft;
-   procedure PressRight is begin Press (Keys (1)); end PressRight;
-   procedure PressUp    is begin Press (Keys (2)); end PressUp;
-   procedure PressDown  is begin Press (Keys (3)); end PressDown;
-   procedure PressPause is begin Press (Keys (4)); end PressPause;
-   procedure PressStart is begin Press (Keys (5)); end PressStart;
+   procedure PressLeft  is begin Press (Keys (ButLeft'Enum_Rep)); end PressLeft;
+   procedure PressRight is begin Press (Keys (ButRight'Enum_Rep)); end PressRight;
+   procedure PressUp    is begin Press (Keys (ButUp'Enum_Rep)); end PressUp;
+   procedure PressDown  is begin Press (Keys (ButDown'Enum_Rep)); end PressDown;
+   procedure PressPause is begin Press (Keys (ButPause'Enum_Rep)); end PressPause;
+   procedure PressStart is begin Press (Keys (ButStart'Enum_Rep)); end PressStart;
 
 begin
    null;

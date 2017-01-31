@@ -20,7 +20,9 @@ package Maps is
         Snake_Right,
         Snake_Up_Right,
         Snake_Down_Right,
-        Snake_Left_Right);
+        Snake_Left_Right,
+        Food,
+        Fruit_1);
 
       for Tile use (
         Empty              => 16#0#,
@@ -35,7 +37,9 @@ package Maps is
         Snake_Right        => 16#28#,
         Snake_Up_Right     => 16#29#,
         Snake_Down_Right   => 16#2a#,
-        Snake_Left_Right   => 16#2c#);
+        Snake_Left_Right   => 16#2c#,
+        Food               => 16#40#,
+        Fruit_1            => 16#41#);
 
       for Tile'Size use TileVal'Size;
 
@@ -61,6 +65,9 @@ package Maps is
 
       function Is_Solid (T : Tile) return Boolean
         is ((Val (T) and (Val (Snake) or Val (Wall))) /= 0);
+
+      function Is_Food (T : Tile) return Boolean
+        is ((Val (T) and Val (Food)) /= 0);
 
       function "+" (T1, T2 : Tile) return Tile is (Rep (Val (T1) or Val (T2)));
       function "-" (T1, T2 : Tile) return Tile is (Rep (Val (T1) and not Val (T2)));
@@ -108,8 +115,8 @@ package Maps is
    procedure Draw_Tile (M : Map; P : MapPoint);
    procedure Draw (M : Map);
 
-   type Level_Range is mod 2;
-   type Levels is (Level_1, Level_2);
+   type Level_Range is mod 3;
+   type Levels is (Level_1, Level_2, Level_3);
    function Get_Level (L : Levels) return String;
 
 end Maps;
