@@ -25,6 +25,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Real_Time;
+
 with STM32F4.Reset_Clock_Control; use STM32F4.Reset_Clock_Control;
 
 package body STM32F4.I2C is
@@ -218,13 +220,15 @@ package body STM32F4.I2C is
       pragma Unreferenced (Time_Out);
       Expected : constant Boolean := (if State = Enabled then True else False);
       --  Cnt : Natural := Time_Out;
+
+      use Ada.Real_Time;
    begin
       while Get_Flag (Port, Flag) /= Expected loop
          --  Cnt := Cnt - 1;
          --  if Cnt = 0 then
          --     raise Program_Error;
          --  end if;
-         null;
+         delay until Time_First;
       end loop;
    end Wait_For_Flag;
 
