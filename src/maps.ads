@@ -1,3 +1,4 @@
+with Ada.Unchecked_Conversion;
 with Display;
 
 package Maps is
@@ -18,7 +19,8 @@ package Maps is
         Snake_Down_Left,
         Snake_Right,
         Snake_Up_Right,
-        Snake_Down_Right);
+        Snake_Down_Right,
+        Snake_Left_Right);
 
       for Tile use (
         Empty              => 16#0#,
@@ -32,11 +34,33 @@ package Maps is
         Snake_Down_Left    => 16#26#,
         Snake_Right        => 16#28#,
         Snake_Up_Right     => 16#29#,
-        Snake_Down_Right   => 16#2a#);
+        Snake_Down_Right   => 16#2a#,
+        Snake_Left_Right   => 16#2c#);
 
       for Tile'Size use TileVal'Size;
 
       function Val (T : Tile) return TileVal is (TileVal (T'Enum_Rep));
+
+      function Rep is new Ada.Unchecked_Conversion
+           (Source => TileVal, Target => Tile);
+
+      function Is_Snake (T : Tile) return Boolean
+        is ((Val (T) and Val (Snake)) /= 0);
+
+      function Is_Snake_Left (T : Tile) return Boolean
+        is ((Val (T) and Val (Snake_Left)) = Val (Snake_Left));
+
+      function Is_Snake_Right (T : Tile) return Boolean
+        is ((Val (T) and Val (Snake_Right)) = Val (Snake_Right));
+
+      function Is_Snake_Up (T : Tile) return Boolean
+        is ((Val (T) and Val (Snake_Up)) = Val (Snake_Up));
+
+      function Is_Snake_Down (T : Tile) return Boolean
+        is ((Val (T) and Val (Snake_Down)) = Val (Snake_Down));
+
+      function "+" (T1, T2 : Tile) return Tile is (Rep (Val (T1) or Val (T2)));
+      function "-" (T1, T2 : Tile) return Tile is (Rep (Val (T1) and not Val (T2)));
 
       pragma Compile_Time_Error (not (
          (TileVal (Snake'Enum_Rep) and TileVal (Snake_Up'Enum_Rep))     /= 0 and then
@@ -50,7 +74,8 @@ package Maps is
          (TileVal (Snake_Left'Enum_Rep)   and TileVal (Snake_Down'Enum_Rep))  /= TileVal (Snake_Down_Left'Enum_Rep)  and then
          (TileVal (Snake_Right'Enum_Rep)  and TileVal (Snake_Down'Enum_Rep))  /= TileVal (Snake_Down_Right'Enum_Rep) and then
          (TileVal (Snake_Left'Enum_Rep)   and TileVal (Snake_Up'Enum_Rep))    /= TileVal (Snake_Up_Left'Enum_Rep)    and then
-         (TileVal (Snake_Right'Enum_Rep)  and TileVal (Snake_Up'Enum_Rep))    /= TileVal (Snake_Up_Right'Enum_Rep)
+         (TileVal (Snake_Right'Enum_Rep)  and TileVal (Snake_Up'Enum_Rep))    /= TileVal (Snake_Up_Right'Enum_Rep)   and then
+         (TileVal (Snake_Right'Enum_Rep)  and TileVal (Snake_Left'Enum_Rep))  /= TileVal (Snake_Left_Right'Enum_Rep)
         ), "Snake bitwise compositions are invalid");
 
    end Tiles;
@@ -71,18 +96,14 @@ package Maps is
       Y : MapCoord;
    end record;
 
-   function From_String (S : String) return Map
+   function "+" (P1, P2 : MapPoint) return MapPoint is (P1.X + P2.X, P1.Y + P2.Y);
+   function "-" (P1, P2 : MapPoint) return MapPoint is (P1.X - P2.X, P1.Y - P2.Y);
+
+   function From_String (S : String; Head, Tail : out MapPoint) return Map
       with Pre => S'Length = Map'Length(1) * Map'Length(2);
 
-   procedure DrawTile (M : Map; P : MapPoint);
+   procedure Draw_Tile (M : Map; P : MapPoint);
    procedure Draw (M : Map);
-
-   CurMap : Map := (others => (others => Tiles.Empty));
-
-   Head : MapPoint := (X => (MapCoord'Last + MapCoord'First) / 2 + 3,
-                       Y => (MapCoord'Last + MapCoord'First) / 2);
-   Tail : MapPoint := (X => (MapCoord'Last + MapCoord'First) / 2 - 3,
-                       Y => (MapCoord'Last + MapCoord'First) / 2);
 
    Level1 : constant String :=
       "                              " &
@@ -98,7 +119,7 @@ package Maps is
       "                              " &
       "                              " &
       "                              " &
-      "                              " &
+      "            TssssH            " &
       "                              " &
       "                              " &
       "                              " &
@@ -134,7 +155,7 @@ package Maps is
       "#    ####################    #" &
       "#                            #" &
       "#                            #" &
-      "#                            #" &
+      "#           TssssH           #" &
       "#                            #" &
       "#                            #" &
       "#                            #" &

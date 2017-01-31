@@ -32,7 +32,9 @@ package Display is
       Y : Height;
       W : Width;
       H : Height;
-   end record;
+   end record
+   with Dynamic_Predicate => Rect.X + Rect.W in Width
+                         and Rect.Y + Rect.H in Height;
 
    function "+" (P1, P2 : Point) return Point is (P1.X + P2.X, P1.Y + P2.Y);
    function "-" (P1, P2 : Point) return Point is (P1.X - P2.X, P1.Y - P2.Y);

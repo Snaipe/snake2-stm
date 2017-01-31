@@ -15,7 +15,7 @@ package body Display is
 
    procedure Fill (P1, P2 : Point; Col : Color) is
       R : constant Rect := (Width'Min (P1.X, P2.X), Height'Min (P1.Y, P2.Y),
-        abs (P1.X - P2.X) + 1, abs (P1.Y - P2.Y) + 1);
+        abs (P1.X - P2.X), abs (P1.Y - P2.Y));
    begin
       Fill (R, Col);
    end Fill;
@@ -23,8 +23,8 @@ package body Display is
    procedure Fill (Bounds : Rect; Col : Color) is
       FB : constant Frame_Buffer_Access := Get_Frame_Buffer (Layer1);
    begin
-      for Y in Bounds.Y .. Bounds.Y + Bounds.H - 1 loop
-         for X in Bounds.X .. Bounds.X + Bounds.W - 1 loop
+      for Y in Bounds.Y .. Bounds.Y + Bounds.H loop
+         for X in Bounds.X .. Bounds.X + Bounds.W loop
             FB.all (Frame_Buffer_Range (Y * STM32F4.LCD.LCD_PIXEL_WIDTH + X)) := Col;
          end loop;
       end loop;
