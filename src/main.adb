@@ -20,33 +20,37 @@ procedure Main is
 
    Level_Seq : constant array (Level_Range) of Levels := (Level_1, Level_2);
 
-   L : Level_Range := 0;
+   L : Level_Range := 1;
    Difficulty : Natural := 1;
 
 begin
    Clear (Colors.White);
 
-   Game.Load (Level_Seq (L), 1);
+   Game.Load (Level_Seq (L), Difficulty);
    Game.Draw;
 
    Gui.Draw;
 
    loop
-      case Game.Update is
-         when Game.None => null;
-         when Game.Win =>
-            L := L + 1;
-            Game.Load (Level_Seq (L), Difficulty);
-            Game.Draw;
-            Gui.Draw;
-         when Game.Lose =>
-            L := 0;
-            Difficulty := 1;
-            Game.Load (Level_Seq (L), Difficulty);
-            Game.Draw;
-            Gui.Draw;
-      end case;
-      delay until RT.Time_First;
+      declare
+         T : RT.Time;
+      begin
+         case Game.Update (T) is
+            when Game.None => null;
+            when Game.Win =>
+               L := L + 1;
+               Game.Load (Level_Seq (L), Difficulty);
+               Game.Draw;
+               Gui.Draw;
+            when Game.Lose =>
+               L := 0;
+               Difficulty := 1;
+               Game.Load (Level_Seq (L), Difficulty);
+               Game.Draw;
+               Gui.Draw;
+         end case;
+         delay until T;
+      end;
    end loop;
 
 end Main;

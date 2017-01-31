@@ -80,40 +80,42 @@ package body Game is
       end case;
    end Next_Head;
 
-   function Update return Victory is
+   function Update (T : out Ada.Real_Time.Time) return Victory is
+
+      use Ada.Real_Time;
+
       Pellets : Natural := 0;
       Tail_Tile : Tile;
       New_Tail : constant MapPoint := Snake_Dir (Tail, Tail_Tile);
 
       Head_Tile : Tile;
       New_Head : MapPoint;
+
+      Ret : Victory := None;
    begin
-      if Update_Counter > Counter_Threshold / Difficulty then
-         Next_Head (CurDir, Head_Tile, New_Head);
+      T := Clock + Milliseconds (500 / Difficulty);
+      Next_Head (CurDir, Head_Tile, New_Head);
 
-         if Is_Solid (CurMap (New_Head.X, New_Head.Y)) then
-            return Lose;
-         end if;
-
-         CurMap (Tail.X, Tail.Y) := Empty;
-         CurMap (New_Tail.X, New_Tail.Y) := CurMap (New_Tail.X, New_Tail.Y)
-                                          - Tail_Tile + Snake;
-
-         CurMap (New_Head.X, New_Head.Y) := Head_Tile;
-         CurMap (Head.X, Head.Y) := CurMap (Head.X, Head.Y)
-                                 + Opposite_Tile (Head_Tile);
-
-         Maps.Draw_Tile (CurMap, Head);
-         Maps.Draw_Tile (CurMap, New_Head);
-         Maps.Draw_Tile (CurMap, Tail);
-         Maps.Draw_Tile (CurMap, New_Tail);
-
-         Head := New_Head;
-         Tail := New_Tail;
-         Update_Counter := 0;
-      else
-         Update_Counter := Update_Counter + 1;
+      if Is_Solid (CurMap (New_Head.X, New_Head.Y)) then
+         return Lose;
       end if;
+
+      CurMap (Tail.X, Tail.Y) := Empty;
+      CurMap (New_Tail.X, New_Tail.Y) := CurMap (New_Tail.X, New_Tail.Y)
+                                       - Tail_Tile + Snake;
+
+      CurMap (New_Head.X, New_Head.Y) := Head_Tile;
+      CurMap (Head.X, Head.Y) := CurMap (Head.X, Head.Y)
+                              + Opposite_Tile (Head_Tile);
+
+      Maps.Draw_Tile (CurMap, Head);
+      Maps.Draw_Tile (CurMap, New_Head);
+      Maps.Draw_Tile (CurMap, Tail);
+      Maps.Draw_Tile (CurMap, New_Tail);
+
+      Head := New_Head;
+      Tail := New_Tail;
+
       return None;
    end Update;
 
