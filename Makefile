@@ -25,6 +25,7 @@ connect:
 	@echo "file $(BINDIR)/$(BINELF)" >> .gdbscript
 	@echo "load" >> .gdbscript
 	@echo "break _ada_main" >> .gdbscript
+	@echo "break __gnat_last_chance_handler" >> .gdbscript
 	@echo "tabset" >> .gdbscript
 	@echo "continue" >> .gdbscript
 
