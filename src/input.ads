@@ -7,7 +7,7 @@ package Input is
 
    Keys : States := ( others => Idle );
 
-   procedure Update;
+   procedure Update (IsTouched : Boolean);
    procedure Update_State (S : in out State; IsTouched : Boolean);
 
    procedure Press(Key: in out State);

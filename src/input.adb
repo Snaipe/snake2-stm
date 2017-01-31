@@ -2,8 +2,7 @@ with Touch; use Touch;
 
 package body Input is
 
-   procedure Update is
-      IsTouched : constant Boolean := Get_Touch_State.Touch_Detected;
+   procedure Update (isTouched : Boolean) is
    begin
          for I in Keys'Range loop
              Update_State (Keys (I), IsTouched);

@@ -25,8 +25,7 @@ package body Gui is
    procedure Update is
       Touch : constant Touch_State := Get_Touch_State;
    begin
-      Input.Update;
-
+      Input.Update (Touch.Touch_Detected);
       if Intersect (Btn_Left, (Touch.X, Touch.Y))   then PressLeft;   end if;
       if Intersect (Btn_Right, (Touch.X, Touch.Y))  then PressRight;  end if;
       if Intersect (Btn_Up, (Touch.X, Touch.Y))     then PressUp;     end if;
