@@ -14,7 +14,7 @@ package body Game is
 
    Update_Counter : Natural := 0;
 
-   Counter_Threshold : constant Natural := 100000;
+   Counter_Threshold : constant Natural := 10;
 
    procedure Load (L : Maps.Levels; D : Positive) is
    begin
