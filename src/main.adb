@@ -1,9 +1,8 @@
-with Touch;
-
-with Display; use Display;
-with Maps; use Maps;
-with Gui;
-with Game;
+with Display         ; use Display;
+with Maps            ; use Maps;
+with Ada.Real_Time   ;
+with Gui             ;
+with Game            ;
 
 with Last_Chance_Handler; pragma Unreferenced (Last_Chance_Handler);
 
@@ -19,6 +18,7 @@ is
    Difficulty : Natural := 1;
 
    package Colors renames Display.Colors;
+
 begin
    Clear (Colors.White);
 
@@ -28,7 +28,6 @@ begin
    Gui.Draw;
 
    loop
-      Gui.Update;
       case Game.Update is
          when Game.None => null;
          when Game.Win =>
@@ -43,6 +42,7 @@ begin
             Game.Draw;
             Gui.Draw;
       end case;
+      delay until Ada.Real_Time.Time_First;
    end loop;
 
 end Main;

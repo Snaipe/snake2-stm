@@ -1,3 +1,4 @@
+with Ada.Real_Time;
 with Display   ; use Display;
 with Input     ; use Input;
 with Touch     ; use Touch;
@@ -21,6 +22,15 @@ package body Gui is
                                        W => W_Center, H => Height - Btn_Up.H);
    Btn_Right : constant Button := (X => W_Side + W_Center, Y => Width,
                                        W => W_Side, H => Height);
+
+   task body GuiTask is
+      use Ada.Real_Time;
+   begin
+      loop
+         Update;
+         delay until Time_First;
+      end loop;
+   end GuiTask;
 
    procedure Update is
       Touch : constant Touch_State := Get_Touch_State;
