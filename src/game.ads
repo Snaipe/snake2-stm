@@ -1,7 +1,11 @@
+with Maps;
+
 package Game is
 
-   procedure Load (S : String; D : Positive);
-   procedure Update;
+   type Victory is (None, Win, Lose);
+
+   procedure Load (L : Maps.Levels; D : Positive);
+   function Update return Victory;
    procedure Draw;
 
 end Game;

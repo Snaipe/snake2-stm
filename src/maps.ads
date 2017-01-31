@@ -59,6 +59,9 @@ package Maps is
       function Is_Snake_Down (T : Tile) return Boolean
         is ((Val (T) and Val (Snake_Down)) = Val (Snake_Down));
 
+      function Is_Solid (T : Tile) return Boolean
+        is ((Val (T) and (Val (Snake) or Val (Wall))) /= 0);
+
       function "+" (T1, T2 : Tile) return Tile is (Rep (Val (T1) or Val (T2)));
       function "-" (T1, T2 : Tile) return Tile is (Rep (Val (T1) and not Val (T2)));
 
@@ -105,67 +108,8 @@ package Maps is
    procedure Draw_Tile (M : Map; P : MapPoint);
    procedure Draw (M : Map);
 
-   Level1 : constant String :=
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "            TssssH            " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              " &
-      "                              ";
-
-   Level2 : constant String :=
-      "##############################" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#    ####################    #" &
-      "#    ####################    #" &
-      "#                            #" &
-      "#                            #" &
-      "#           TssssH           #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "#                            #" &
-      "##############################";
+   type Level_Range is mod 2;
+   type Levels is (Level_1, Level_2);
+   function Get_Level (L : Levels) return String;
 
 end Maps;

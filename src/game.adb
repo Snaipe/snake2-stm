@@ -16,9 +16,9 @@ package body Game is
 
    Counter_Threshold : constant Natural := 100000;
 
-   procedure Load (S : String; D : Positive) is
+   procedure Load (L : Maps.Levels; D : Positive) is
    begin
-      CurMap := Maps.From_String (S, Head, Tail);
+      CurMap := Maps.From_String (Maps.Get_Level(L), Head, Tail);
       Difficulty := D;
    end Load;
 
@@ -28,6 +28,7 @@ package body Game is
    end Draw;
 
    function Snake_Dir (P : MapPoint; K : out Tile) return MapPoint is
+      Lim : constant Natural := Natural (MapCoord'Last) + 1;
       DX : Integer := 0;
       DY : Integer := 0;
    begin
@@ -44,7 +45,7 @@ package body Game is
          K := Snake_Up;
          DY := 1;
       end if;
-      return (P.X + DX, P.Y + DY);
+      return ((P.X + DX + Lim) mod Lim, (P.Y + DY + Lim) mod Lim);
    end Snake_Dir;
 
    function Opposite_Tile (T : Tile) return Tile
@@ -69,16 +70,17 @@ package body Game is
    end Opposite_Tile;
 
    procedure Next_Head (D : Direction; T : out Tile; P : out MapPoint) is
+      Lim : constant Natural := Natural (MapCoord'Last) + 1;
    begin
       case D is
-         when Up     => T := Snake_Down;  P := (Head.X, Head.Y - 1);
-         when Down   => T := Snake_Up;    P := (Head.X, Head.Y + 1);
-         when Left   => T := Snake_Right; P := (Head.X - 1, Head.Y);
-         when Right  => T := Snake_Left;  P := (Head.X + 1, Head.Y);
+         when Up     => T := Snake_Down;  P := (Head.X, (Head.Y - 1 + Lim) mod Lim);
+         when Down   => T := Snake_Up;    P := (Head.X, (Head.Y + 1 + Lim) mod Lim);
+         when Left   => T := Snake_Right; P := ((Head.X - 1 + Lim) mod Lim, Head.Y);
+         when Right  => T := Snake_Left;  P := ((Head.X + 1 + Lim) mod Lim, Head.Y);
       end case;
    end Next_Head;
 
-   procedure Update is
+   function Update return Victory is
       Pellets : Natural := 0;
       Tail_Tile : Tile;
       New_Tail : constant MapPoint := Snake_Dir (Tail, Tail_Tile);
@@ -88,6 +90,10 @@ package body Game is
    begin
       if Update_Counter > Counter_Threshold / Difficulty then
          Next_Head (CurDir, Head_Tile, New_Head);
+
+         if Is_Solid (CurMap (New_Head.X, New_Head.Y)) then
+            return Lose;
+         end if;
 
          CurMap (Tail.X, Tail.Y) := Empty;
          CurMap (New_Tail.X, New_Tail.Y) := CurMap (New_Tail.X, New_Tail.Y)
@@ -108,6 +114,7 @@ package body Game is
       else
          Update_Counter := Update_Counter + 1;
       end if;
+      return None;
    end Update;
 
 end Game;
