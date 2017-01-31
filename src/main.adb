@@ -2,6 +2,7 @@ with Touch;
 
 with Display; use Display;
 with Maps; use Maps;
+with Gui;
 
 with Last_Chance_Handler; pragma Unreferenced (Last_Chance_Handler);
 
@@ -18,7 +19,11 @@ begin
 
    Maps.Draw (CurMap);
 
+   Gui.Draw;
+
    loop
+      Gui.Update;
+
       for X in Width'Range loop
          Set ((X, Width'Last + 1), Colors.Black);
       end loop;

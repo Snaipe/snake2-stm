@@ -30,6 +30,15 @@ package body Display is
       end loop;
    end Fill;
 
+   function Intersect (R : Rect; P : Point) return Boolean is
+   begin
+         if P.X >= R.X and P.X <= (R.X + R.W)
+            and P.Y >= R.Y and P.Y <= (R.Y + R.H) then
+            return True;
+         end if;
+         return False;
+   end Intersect;
+
 begin
    STM32F4.LCD.Initialize;
    STM32F4.LCD.Set_Background (16#00#, 16#00#, 16#00#);

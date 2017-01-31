@@ -36,6 +36,7 @@ package Display is
 
    function "+" (P1, P2 : Point) return Point is (P1.X + P2.X, P1.Y + P2.Y);
    function "-" (P1, P2 : Point) return Point is (P1.X - P2.X, P1.Y - P2.Y);
+   function Intersect (R: Rect; P : Point) return Boolean;
 
    procedure Set (P : Point; Col : Color);
    procedure Clear (Col : Color);
