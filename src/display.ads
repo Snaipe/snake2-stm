@@ -1,12 +1,9 @@
 with STM32F4.LCD;
 
-package Renderer is
+package Display is
 
    subtype Width is STM32F4.LCD.Width;
-   subtype Height is STM32F4.LCD.Width; -- Yes, width
-
-   type Buffer_Range is range 0 .. (Width'Last * Width'Last) - 1;
-   type Buffer is array (Buffer_Range) of STM32F4.LCD.Pixel with Pack;
+   subtype Height is STM32F4.LCD.Height;
 
    subtype Color is STM32F4.LCD.Pixel;
 
@@ -28,11 +25,17 @@ package Renderer is
       Y : Height;
    end record;
 
+   type Rect is record
+      X : Width;
+      Y : Height;
+      W : Width;
+      H : Height;
+   end record;
+
    function "+" (P1, P2 : Point) return Point is (P1.X + P2.X, P1.Y + P2.Y);
    function "-" (P1, P2 : Point) return Point is (P1.X - P2.X, P1.Y - P2.Y);
 
    procedure Set (P : Point; Col : Color);
    procedure Clear (Col : Color);
-   procedure Blit;
 
-end Renderer;
+end Display;

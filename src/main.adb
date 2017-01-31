@@ -1,7 +1,7 @@
 with Touch;
 
 with STM32F429_Discovery;
-with Screen_Interface; use Screen_Interface;
+with Display; use Display;
 with Maps; use Maps;
 
 with Last_Chance_Handler; pragma Unreferenced (Last_Chance_Handler);
@@ -14,19 +14,19 @@ is
          when Empty =>
             for J in Y * Div .. (Y + 1) * Div - 1 loop
                for I in X * Div .. (X + 1) * Div - 1 loop
-                  Set_Pixel ((I, J), White);
+                  Set ((I, J), White);
                end loop;
             end loop;
          when Wall =>
             for J in Y * Div .. (Y + 1) * Div - 1 loop
                for I in X * Div .. (X + 1) * Div - 1 loop
-                  Set_Pixel ((I, J), Black);
+                  Set ((I, J), Black);
                end loop;
             end loop;
          when Snake_Up .. Snake_Right =>
             for J in Y * Div .. (Y + 1) * Div - 1 loop
                for I in X * Div .. (X + 1) * Div - 1 loop
-                  Set_Pixel ((I, J), Blue);
+                  Set ((I, J), Blue);
                end loop;
             end loop;
          when others => null;
@@ -35,7 +35,7 @@ is
 
 begin
    STM32F429_Discovery.Initialize_LEDS;
-   Screen_Interface.Initialize;
+   -- Display.Initialize;
 
    STM32F429_Discovery.On (STM32F429_Discovery.Green);
 
@@ -54,7 +54,7 @@ begin
 
    CurMap := Maps.From_String (Maps.Level2);
 
-   Fill_Screen (White);
+   Clear (White);
 
    loop
       for Y in MapCoord'Range loop
@@ -64,7 +64,7 @@ begin
       end loop;
 
       for X in Width'Range loop
-         Set_Pixel ((X, Width'Last + 1), Black);
+         Set ((X, Width'Last + 1), Black);
       end loop;
 
       declare
@@ -83,10 +83,10 @@ begin
          end if;
 
          for I in Width loop
-            Set_Pixel ((I, Last_Y), Red);
+            Set ((I, Last_Y), Red);
          end loop;
          for I in Height loop
-            Set_Pixel ((Last_X, I), Red);
+            Set ((Last_X, I), Red);
          end loop;
       end;
    end loop;
