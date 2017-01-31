@@ -9,9 +9,9 @@ package body Gui is
    subtype Button is Display.Rect;
 
    Width       : constant Display.Width  := Display.Width'Last;
-   Height      : constant Display.Height := Display.Height'Last - Width + 1;
+   Height      : constant Display.Height := Display.Height'Last - Width;
    W_Side      : constant Display.Width  := Width * 25 / 100;
-   W_Center    : constant Display.Width  := Width - 2 * W_Side + 1;
+   W_Center    : constant Display.Width  := Width - 2 * W_Side;
 
    Btn_Left  : constant Button := (X => 0, Y => Width,
                                        W => W_Side, H => Height);

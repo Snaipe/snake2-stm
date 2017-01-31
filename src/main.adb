@@ -35,11 +35,13 @@ begin
             L := L + 1;
             Game.Load (Level_Seq (L), Difficulty);
             Game.Draw;
+            Gui.Draw;
          when Game.Lose =>
             L := 0;
             Difficulty := 1;
             Game.Load (Level_Seq (L), Difficulty);
             Game.Draw;
+            Gui.Draw;
       end case;
    end loop;
 
